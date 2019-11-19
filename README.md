@@ -1,6 +1,5 @@
-Docker for WEB and Gitlab CI
+TaskManager (mini)
 ==========
-Docker for WEB and Gitlab CI
 
 Installation
 ------------
@@ -10,7 +9,7 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-composer create-project jakharbek/web-docker-gitlab-ci
+composer create-project jakharbek/mvc-framework
 ```
 
 
@@ -29,3 +28,16 @@ Gitlab CI
 -----
 
 Для работы с Gitlab CI вам нужно заполнить все переменные среды в гитлаб. Пример в файле .env.gitlab.example
+
+
+App
+------
+```bash
+cp .env.example .env
+docker-compose up -d
+docker-compose exec app bash
+cd application
+cp .env.example .env
+vendor/bin/doctrine orm:schema-tool:update --force
+php console/seeds/initAdmin.php
+```

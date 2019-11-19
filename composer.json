@@ -1,6 +1,6 @@
 {
-    "name": "jakharbek/web-docker-gitlab-ci",
-    "description": "Docker for Web and Gitlab CI",
+    "name": "jakharbek/mvc-framework",
+    "description": "Mvc Framework",
     "type": "project",
     "license": "MIT",
     "authors": [
