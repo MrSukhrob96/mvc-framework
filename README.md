@@ -32,6 +32,12 @@ Gitlab CI
 
 App
 ------
+php.ini
+```php
+session.gc_maxlifetime=3600
+```
+lets run project
+
 ```bash
 cp .env.example .env
 docker-compose up -d
