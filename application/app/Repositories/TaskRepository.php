@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jakhar
- * Date: 11/19/19
- * Time: 1:41 PM
- */
-
 namespace App\Repositories;
 
 
