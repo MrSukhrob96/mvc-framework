@@ -52,21 +52,24 @@ class TaskController extends AbstractController
      */
     public function index(Request $request)
     {
-        $formErrors = [];
+        $formAlert = ['error' => [],'success' => []];
 
         if ($request->isMethod("POST")) {
-            $formErrors = $this->validationFormCreate();
-            if (count($formErrors) == 0) {
+            $formAlert['error'] = $this->validationFormCreate();
+            if (count($formAlert['error']) == 0) {
                 try {
 
                     $createDTO = new CreateTaskDTO();
                     $createDTO->username = $request->request->get('username');
                     $createDTO->email = $request->request->get('email');
                     $createDTO->description = $request->request->get('description');
-                    $this->repository->create($createDTO);
+                    $task = $this->repository->create($createDTO);
+                    if(is_a($task,Task::class)){
+                        $formAlert['success']['added'] = "Task successfully added";
+                    }
 
                 } catch (\Exception $exception) {
-                    $formErrors['error'] = $exception->getMessage();
+                    $formAlert['error']['exception'] = $exception->getMessage();
                 }
             }
         }
@@ -82,7 +85,7 @@ class TaskController extends AbstractController
             'currentPage' => ($request->get('page') ?? 1),
             'sortAttributes' => $sortAttributes,
             'sort' => SortHelper::getDirectionSort(),
-            'formErrors' => $formErrors
+            'formAlert' => $formAlert
         ]);
     }
 
@@ -92,13 +95,13 @@ class TaskController extends AbstractController
      */
     public function update(Request $request)
     {
-        $formErrors = [];
+        $formAlert = ['error' => [],'success' => []];
 
         if (Framework::$auth->getStatus() !== "VALID") {
             return new RedirectResponse(Framework::$urlGenerator->generate('login'));
         }
 
-        if (count($formErrors) == 0) {
+        if (count($formAlert['error']) == 0) {
             if (validator::intType()->validate((int)Framework::$request->get('id'))) {
                 $task = $this->repository->find((int)$request->get('id'));
             }
@@ -107,11 +110,11 @@ class TaskController extends AbstractController
              * @var $task Task
              */
             if (!is_a($task, Task::class)) {
-                $formErrors['error'] = "Task is not founded";
+                $formAlert['error']['not_founded'] = "Task is not founded";
             }
             if ($request->isMethod("POST")) {
-                $formErrors = $this->validationFormUpdate();
-                if (count($formErrors) == 0) {
+                $formAlert['error'] = $this->validationFormUpdate();
+                if (count($formAlert['error']) == 0) {
                     try {
                         $task->setStatus($request->request->get('status'));
 
@@ -119,10 +122,13 @@ class TaskController extends AbstractController
                         $newDescription = $task->setDescription($request->request->get('description'));
                         if ($oldDescription !== $newDescription) {
                             $task->setUpdatedAt();
+                            $formAlert['info']['updated_admin'] = "Marked as changed by administrator";
+
                         }
                         $this->db->flush();
+                        $formAlert['success']['updated'] = "Task updated successfully";
                     } catch (\Exception $exception) {
-                        $formErrors['error'] = $exception->getMessage();
+                        $formAlert['error']['exception'] = $exception->getMessage();
                     }
                 }
             }
@@ -140,7 +146,7 @@ class TaskController extends AbstractController
             'currentPage' => ($request->get('page') ?? 1),
             'sortAttributes' => $sortAttributes,
             'sort' => SortHelper::getDirectionSort(),
-            'formErrors' => $formErrors,
+            'formAlert' => $formAlert,
             'task' => $task
         ]);
     }

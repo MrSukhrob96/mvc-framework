@@ -1,16 +1,18 @@
 <?php
 /**
- * @var $formErrors array
+ * @var $formAlert array
  * @var $task \App\Models\Task
  */
 ?>
-<?php if (count($formErrors) > 0): ?>
-    <div class="alert alert-danger" role="alert">
-        <?php foreach ($formErrors as $attribute => $formError): ?>
-            <?= $formError ?>
-        <?php endforeach; ?>
-    </div>
-
+<?php if (count($formAlert) > 0): ?>
+    <?php foreach ($formAlert as $typeAlert => $alerts): ?>
+        <?php if (count($alerts) == 0): continue; endif; ?>
+        <div class="alert alert-<?=($typeAlert == "error") ? "danger" : ($typeAlert == "success" ? "success" : "primary")?>" role="alert">
+            <?php foreach ($alerts as $alert): ?>
+                <?=$alert?> <br />
+            <?php endforeach; ?>
+        </div>
+    <?php endforeach; ?>
 <?php endif; ?>
 <?php if (!is_a($task, \App\Models\Task::class)) {
     return;
@@ -32,8 +34,8 @@
         </select>
     </div>
     <div class="form-group">
-        <label for="description">Task</label>
+        <label for="description">Description</label>
         <textarea class="form-control" id="description" name="description" rows="3"><?= $task->getDescription() ?></textarea>
     </div>
-    <input type="submit" class="form-control btn-warning" value="Update"/>
+    <input type="submit" class="form-control btn-outline-primary" value="Update"/>
 </form>

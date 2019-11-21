@@ -1,15 +1,17 @@
 <?php
 /**
- * @var $formErrors array
+ * @var $formAlert array
  */
 ?>
-
-<?php if (count($formErrors) > 0): ?>
-    <div class="alert alert-danger" role="alert">
-        <?php foreach ($formErrors as $attribute => $formError): ?>
-            <?= $formError ?><br />
+<?php if (count($formAlert) > 0): ?>
+    <?php foreach ($formAlert as $typeAlert => $alerts): ?>
+        <?php if (count($alerts) == 0): continue; endif; ?>
+        <div class="alert alert-<?=($typeAlert == "error") ? "danger" : ($typeAlert == "success" ? "success" : "primary")?>" role="alert">
+        <?php foreach ($alerts as $alert): ?>
+            <?=$alert?> <br />
         <?php endforeach; ?>
-    </div>
+        </div>
+    <?php endforeach; ?>
 
 <?php endif; ?>
 
@@ -23,8 +25,8 @@
         <input type="email" class="form-control" id="email" placeholder="name@example.com" name="email">
     </div>
     <div class="form-group">
-        <label for="description">Task</label>
+        <label for="description">Description</label>
         <textarea class="form-control" id="description" name="description" rows="3"></textarea>
     </div>
-    <input type="submit" class="form-control btn-success" value="Create"/>
+    <input type="submit" class="form-control btn-outline-success btn-sm" value="Create"/>
 </form>
